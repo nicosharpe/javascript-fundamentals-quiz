@@ -2,9 +2,8 @@ var startBtn = document.querySelector("#start");
 var timeEl = document.querySelector("#time");
 var choices = document.querySelector("#choices");
 var end = document.querySelector("#end-screen");
-var score = end.getElementsByTagName("#final-score");
+var score = end.querySelector("#final-score");
 
-console.log(score);
 
 var currentQuestionIndex = 0
 var secondsLeft = 60;
@@ -43,18 +42,18 @@ var questions = [
 
 // start button - on click, timer starts and 1st question appears
 startBtn.addEventListener("click", function () {
-  ;
+
 
   // Set interval in variable
   var timerInterval = setInterval(function () {
     secondsLeft--;
     timeEl.textContent = secondsLeft;
-
+    console.log(userScore);
     if ((secondsLeft === 0) || (currentQuestionIndex >= questions.length)) {
       // Stop execution of action at set interval
       clearInterval(timerInterval);
       // Calls function to create and append message
-      sendMessage();
+      sendMessage(); 
     }
 
   }, 1000);
@@ -100,8 +99,8 @@ function questionTime(index) {
 function checkAnswer(event) {
   var answerIndex = event.target.dataset.index;
   const question = questions[currentQuestionIndex];
-  if (answerIndex === question.correctAnswer) {
-    userScore++;
+  if (answerIndex == question.correctAnswer) {
+   
   } else {
     secondsLeft -= 10;
   }
@@ -120,10 +119,10 @@ function checkAnswer(event) {
 function showResults() {
   QSection.classList.add("hide")
   end.classList.remove("hide")
+  userScore = secondsLeft;
 }
 // Function to create and append message
 function sendMessage() {
-
   var timesUpTitle = end.getElementsByTagName("h2")[0];
   timesUpTitle.textContent = "Times Up!";
   score.textContent = secondsLeft;
@@ -132,22 +131,39 @@ function sendMessage() {
 var submit = document.querySelector("#submit");
 
 submit.addEventListener('click', function (event) {
-  function saveUserScore() {
-    let initials = document.querySelector("#initials"); // the text that user submits
-
-
-console.log(score);
-
-    localStorage.setItem("Initials", initials);
-    localStorage.setItem("score", score);
-
-    let userScore = initials + score
-    console.log(userScore);
-
-
-
-  }
+  saveUserScore(); 
 });
+
+function saveUserScore () {
+  let initials = document.querySelector("#initials");
+  initials.value;
+
+  if (initials.value.trim() === "") {
+    alert("Please enter your inintials, 3 letters maximum.");
+    return;
+  }
+
+
+let user = {
+  initials: initials.value;
+  score: userScore;
+}
+
+// Retrieve existing highscores from localStorage or initialize an empty array
+let highscores = JSON.parse(localStorage.getItem("highscores")) || [];
+
+  // Add the user's score to the highscores array
+highscores.push(user);
+
+ // Sort highscores by score in descending order
+ highscores.sort((a, b) => b.score - a.score);
+
+  // Save the updated highscores back to localStorage
+  localStorage.setItem("highscores", JSON.stringify(highscores));
+
+  // Redirect to the highscores page or do any other necessary actions
+  window.location.href = "highscores.html";
+};
 
 
 
@@ -162,15 +178,17 @@ console.log(score);
 // JSON --> "{ "name": "test", "score": 12 }"
 // JSON.stringify(jsObj)  --> JSON OBJ "{ }"
 // JSON.parse(jsonData)  --> JavaScript OBJ
-var highscores = [{ name: "test", score: 12 }, { name: "test1", score: 6 }];
-JSON.stringify(highscores);
+
+// var highscores = [{ name: "test", score: 12 }, { name: "test1", score: 6 }];
+// JSON.stringify(highscores);
 
 // -- localStorage -- 
 // setItem(key, data);  --> sets key and data
 // getItem(key) --> retrieves data stored
-function populateStorage() {
-  setItem(highscores,)
-}
+
+// function populateStorage() {
+//   setItem(highscores,)
+// }
 
 
 
